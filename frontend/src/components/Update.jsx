@@ -41,9 +41,12 @@ const Update = () => {
   };
 
   return (
-    <div>
-      <h1>Update User</h1>
-      <form onSubmit={handleUpdate}>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+      <h1 className="text-2xl font-bold text-blue-600 mb-4">Update User</h1>
+      <form
+        onSubmit={handleUpdate}
+        className="bg-white p-6 rounded-lg shadow-md w-full max-w-md"
+      >
         <input
           type="text"
           name="name"
@@ -51,6 +54,7 @@ const Update = () => {
           value={formData.name}
           onChange={handleInputChange}
           required
+          className="w-full p-2 border border-gray-300 rounded-md mb-4"
         />
         <input
           type="email"
@@ -59,8 +63,14 @@ const Update = () => {
           value={formData.email}
           onChange={handleInputChange}
           required
+          className="w-full p-2 border border-gray-300 rounded-md mb-4"
         />
-        <button type="submit">Update</button>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
+        >
+          Update
+        </button>
       </form>
     </div>
   );

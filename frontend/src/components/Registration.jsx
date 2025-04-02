@@ -35,10 +35,24 @@ const Registration = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/users/${id}`);
+      setUsers(users.filter((user) => user.id !== id));
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
   return (
-    <div>
-      <h1 className="text-green-500 font-bold">Registration Form</h1>
-      <form className="bg-red-300 flex flex-col" onSubmit={handleSubmit}>
+    <div className="max-w-2xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg mt-6">
+      <h1 className="text-2xl font-bold text-green-500 mb-4">
+        Registration Form
+      </h1>
+      <form
+        className="bg-white p-4 rounded-lg shadow-md space-y-3"
+        onSubmit={handleSubmit}
+      >
         <input
           type="text"
           name="name"
@@ -46,6 +60,7 @@ const Registration = () => {
           value={formData.name}
           onChange={handleInputChange}
           required
+          className="w-full p-2 border rounded-md"
         />
         <input
           type="email"
@@ -54,20 +69,40 @@ const Registration = () => {
           value={formData.email}
           onChange={handleInputChange}
           required
+          className="w-full p-2 border rounded-md"
         />
-        <button className="bg-green-800 inline text-white" type="submit">
+        <button
+          className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600"
+          type="submit"
+        >
           Register
         </button>
       </form>
 
-      <h2>Users List</h2>
-      <ul>
+      <h2 className="text-xl font-semibold mt-6">Users List</h2>
+      <ul className="mt-4 space-y-3">
         {users.map((user) => (
-          <li key={user.id}>
-            {user.name} - {user.email}
-            <Link to={`/update/${user.id}`} style={{ marginLeft: "10px" }}>
-              Edit
-            </Link>
+          <li
+            key={user.id}
+            className="flex justify-between items-center bg-white p-3 shadow-md rounded-md"
+          >
+            <span className="text-gray-700">
+              {user.name} - {user.email}
+            </span>
+            <div>
+              <Link
+                className="bg-blue-500 text-white px-3 py-1 rounded-md mr-2 hover:bg-blue-600"
+                to={`/update/${user.id}`}
+              >
+                Edit
+              </Link>
+              <button
+                className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+                onClick={() => handleDelete(user.id)}
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>
