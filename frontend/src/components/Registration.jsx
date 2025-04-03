@@ -46,7 +46,7 @@ const Registration = () => {
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg mt-6">
-      <h1 className="text-2xl font-bold text-green-500 mb-4">
+      <h1 className="text-2xl font-bold text-green-500 mb-4 text-center">
         Registration Form
       </h1>
       <form
@@ -72,14 +72,14 @@ const Registration = () => {
           className="w-full p-2 border rounded-md"
         />
         <button
-          className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600"
+          className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 text-center"
           type="submit"
         >
           Register
         </button>
       </form>
 
-      <h2 className="text-xl font-semibold mt-6">Users List</h2>
+      <h2 className="text-xl font-semibold mt-6 text-center">Users List</h2>
       <ul className="mt-4 space-y-3">
         {users.map((user) => (
           <li
