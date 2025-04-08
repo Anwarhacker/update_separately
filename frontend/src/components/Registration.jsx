@@ -29,7 +29,10 @@ const Registration = () => {
     try {
       await axios.post("http://localhost:5000/users", formData);
       setFormData({ name: "", email: "" });
+      //purpose to keep the input field clean or empty after submission
+      //fetch the updated list of users
       fetchUsers();
+      // to update the users list after adding a new user
     } catch (error) {
       console.error("Error submitting form:", error);
     }
