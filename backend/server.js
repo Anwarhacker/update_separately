@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const bcrypt = require("bcryptjs");
 
 const app = express();
 app.use(express.json());
@@ -14,7 +15,8 @@ mongoose.connect("mongodb://localhost:27017/separately", {
 
 const userSchema = new mongoose.Schema({
   name: String,
-  email: String,
+  email: { type: String, unique: true },
+  password: String,
 });
 
 const User = mongoose.model("User", userSchema);
@@ -34,11 +36,20 @@ app.get("/users", async (req, res) => {
   }
 });
 
-// Add a new user
+// Add a new user (registration)
 app.post("/users", async (req, res) => {
   try {
-    const newUser = new User(req.body);
+    const { name, email, password } = req.body;
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
+
     res.status(201).json({
       id: newUser._id,
       name: newUser.name,
@@ -46,6 +57,31 @@ app.post("/users", async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: "Error creating user" });
+  }
+});
+
+// Login route
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    res.status(200).json({ message: "Login successful", user: {
+      id: user._id,
+      name: user.name,
+      email: user.email
+    }});
+  } catch (error) {
+    res.status(500).json({ error: "Login failed" });
   }
 });
 
