@@ -15,7 +15,7 @@ const Registration = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/users");
+      const response = await axios.get("https://update-separately.onrender.com/users");
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -33,7 +33,7 @@ const Registration = () => {
     setSuccessMessage("");
     
     try {
-      const response = await axios.post('http://localhost:5000/api/register', formData);
+      const response = await axios.post('https://update-separately.onrender.com/api/register', formData);
       setSuccessMessage("Registration successful!");
       setFormData({ name: "", email: "", password: "" }); // Clear form
       fetchUsers(); // Refresh users list
@@ -45,7 +45,7 @@ const Registration = () => {
   };
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/users/${id}`);
+      await axios.delete(`https://update-separately.onrender.com/users/${id}`);
       setUsers(users.filter((user) => user.id !== id));
     } catch (error) {
       console.error("Error deleting user:", error);

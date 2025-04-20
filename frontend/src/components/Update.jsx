@@ -14,7 +14,7 @@ const Update = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/users");
+      const response = await axios.get("https://update-separately.onrender.com/users");
       const user = response.data.find((user) => user.id === id);
       if (user) {
         setFormData({ name: user.name, email: user.email });
@@ -34,7 +34,7 @@ const Update = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/users/${id}`, formData);
+      await axios.put(`https://update-separately.onrender.com/users/${id}`, formData);
       navigate("/"); // Redirect to home after update
     } catch (error) {
       console.error("Error updating user:", error);
