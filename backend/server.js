@@ -8,15 +8,36 @@ app.use(express.json());
 app.use(cors());
 
 // Connect to MongoDB
+// Update CORS configuration
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://your-frontend-domain.com'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Update MongoDB connection
 mongoose.connect("mongodb://localhost:27017/separately", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
 })
 .then(() => {
   console.log("Connected to MongoDB successfully");
 })
 .catch((err) => {
   console.error("MongoDB connection error:", err);
+  process.exit(1); // Exit if cannot connect to database
+});
+
+// Update error handling middleware (add at the end before app.listen)
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({ 
+    error: "Internal server error", 
+    details: process.env.NODE_ENV === 'development' ? err.message : undefined 
+  });
 });
 
 const userSchema = new mongoose.Schema({
@@ -170,10 +191,23 @@ app.delete("/api/users/:id", async (req, res) => {
     if (!deletedUser) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.json({ message: "User deleted successfully" });
+
+    // Send more detailed success response
+    res.json({ 
+      message: "User deleted successfully",
+      deletedUser: {
+        id: deletedUser._id,
+        name: deletedUser.name,
+        email: deletedUser.email
+      }
+    });
   } catch (error) {
     console.error("Delete error:", error);
-    res.status(500).json({ error: "Failed to delete user" });
+    // Send more specific error message
+    res.status(500).json({ 
+      error: "Failed to delete user",
+      details: error.message
+    });
   }
 });
 
