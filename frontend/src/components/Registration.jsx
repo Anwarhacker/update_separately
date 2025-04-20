@@ -60,7 +60,7 @@ const Registration = () => {
   return (
     <div className="max-w-2xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg mt-6">
       <h1 className="text-2xl font-bold text-green-500 mb-4 text-center">
-        Registration Form
+        Registration Formm
       </h1>
       {errorMessage && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
