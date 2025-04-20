@@ -11,9 +11,11 @@ app.use(cors());
 mongoose.connect("mongodb://localhost:27017/separately", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}).then(() => {
-  console.log("Connected to MongoDB");
-}).catch((err) => {
+})
+.then(() => {
+  console.log("Connected to MongoDB successfully");
+})
+.catch((err) => {
   console.error("MongoDB connection error:", err);
 });
 
@@ -27,18 +29,17 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 
 // Get all users
-app.get("/users", async (req, res) => {
+app.get("/api/users", async (req, res) => {
   try {
     const users = await User.find().select('-password');
-    res.json(users.map(user => ({
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      createdAt: user.createdAt
-    })));
+    console.log("Users fetched successfully:", users); // Debug log
+    res.json(users);
   } catch (error) {
-    console.error("Error fetching users:", error);
-    res.status(500).json({ error: "Failed to fetch users" });
+    console.error("Error in /api/users endpoint:", error);
+    res.status(500).json({ 
+      error: "Failed to fetch users",
+      details: error.message 
+    });
   }
 });
 
@@ -120,7 +121,7 @@ app.post("/api/login", async (req, res) => {
 });
 
 // Update a user
-app.put("/users/:id", async (req, res) => {
+app.put("/api/users/:id", async (req, res) => {
   try {
     const { name, email } = req.body;
     const updates = {};
@@ -156,9 +157,16 @@ app.put("/users/:id", async (req, res) => {
 });
 
 // Delete a user
-app.delete("/users/:id", async (req, res) => {
+// Fix the delete endpoint (remove extra slash)
+app.delete("/api/users/:id", async (req, res) => {
   try {
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid user ID format" });
+    }
+
+    const deletedUser = await User.findByIdAndDelete(id);
     if (!deletedUser) {
       return res.status(404).json({ error: "User not found" });
     }
