@@ -14,7 +14,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "https://update-separately.onrender.com/login",
+        "http://localhost:5000/api/login",
         formData
       );
       setMessage(response.data.message);

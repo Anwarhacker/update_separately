@@ -3,7 +3,6 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Registration = () => {
-  // Update the initial state to include password
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -15,10 +14,11 @@ const Registration = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("https://update-separately.onrender.com/users");
+      const response = await axios.get("http://localhost:5000/api/users");
+      console.log("Users fetched successfully:", response.data);
       setUsers(response.data);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching users:", error.response?.data || error.message);
     }
   };
 
@@ -33,26 +33,30 @@ const Registration = () => {
     setSuccessMessage("");
     
     try {
-      const response = await axios.post('https://update-separately.onrender.com/api/register', formData);
+      const response = await axios.post('http://localhost:5000/api/register', formData);
       setSuccessMessage("Registration successful!");
-      setFormData({ name: "", email: "", password: "" }); // Clear form
-      fetchUsers(); // Refresh users list
+      setFormData({ name: "", email: "", password: "" });
+      fetchUsers();
     } catch (error) {
       const message = error.response?.data?.error || "Registration failed. Please try again.";
       setErrorMessage(message);
       console.error("Error submitting form:", error);
     }
   };
+
+  // Remove the duplicate handleDelete function and update the remaining one
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://update-separately.onrender.com/users/${id}`);
-      setUsers(users.filter((user) => user.id !== id));
+      await axios.delete(`http://localhost:5000/api/users/${id}`);
+      fetchUsers(); // Refresh the list after deletion
     } catch (error) {
       console.error("Error deleting user:", error);
     }
   };
+  
+  // Update the fetchUsers function
+ 
 
-  // Update the form JSX to include password field and messages
   return (
     <div className="max-w-2xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg mt-6">
       <h1 className="text-2xl font-bold text-green-500 mb-4 text-center">
@@ -109,9 +113,10 @@ const Registration = () => {
 
       <h2 className="text-xl font-semibold mt-6 text-center">Users List</h2>
       <ul className="mt-4 space-y-3">
+        // Update the users mapping section to use _id instead of id
         {users.map((user) => (
           <li
-            key={user.id}
+            key={user._id}
             className="flex justify-between items-center bg-white p-3 shadow-md rounded-md"
           >
             <span className="text-gray-700">
@@ -120,13 +125,13 @@ const Registration = () => {
             <div>
               <Link
                 className="bg-blue-500 text-white px-3 py-1 rounded-md mr-2 hover:bg-blue-600"
-                to={`/update/${user.id}`}
+                to={`/update/${user._id}`}
               >
                 Edit
               </Link>
               <button
                 className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
-                onClick={() => handleDelete(user.id)}
+                onClick={() => handleDelete(user._id)}
               >
                 Delete
               </button>
