@@ -14,7 +14,7 @@ const Registration = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/users");
+      const response = await axios.get("https://let-correct-backend.onrender.com/api/users");
       console.log("Users fetched successfully:", response.data);
       setUsers(response.data);
     } catch (error) {
@@ -33,7 +33,7 @@ const Registration = () => {
     setSuccessMessage("");
     
     try {
-      const response = await axios.post('http://localhost:5000/api/register', formData);
+      const response = await axios.post('https://let-correct-backend.onrender.com/api/register', formData);
       setSuccessMessage("Registration successful!");
       setFormData({ name: "", email: "", password: "" });
       fetchUsers();
@@ -47,7 +47,7 @@ const Registration = () => {
   // Remove the duplicate handleDelete function and update the remaining one
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/users/${id}`);
+      await axios.delete(`https://let-correct-backend.onrender.com/api/users/${id}`);
       fetchUsers(); // Refresh the list after deletion
     } catch (error) {
       console.error("Error deleting user:", error);
